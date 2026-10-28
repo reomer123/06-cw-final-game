@@ -1,9 +1,33 @@
 // Variables to control game state
 let gameRunning = false; // Keeps track of whether game is active or not
 let dropMaker; // Will store our timer that creates drops regularly
+let dropCounter = 1000; // Will store amount of time between each drop
 let timeKeeper; // Will store the game countdown timer
 let timer = document.getElementById("time"); // Will keep track of the 30 sec timer
 let score = document.getElementById("score"); // Will keep track of the score of the current game
+let initialSize = 60; // Will store the initial size of each bubble
+let badDropOdds = 0.1;
+
+document.getElementById("easy-btn").addEventListener("click", function(Event) {
+  dropCounter = 500;
+  initialSize = 80;
+  badDropOdds = 0.05;
+  document.getElementById("dif").textContent = "Easy";
+})
+
+document.getElementById("med-btn").addEventListener("click", function(Event) {
+  dropCounter = 1000;
+  initialSize = 60;
+  badDropOdds = 0.1;
+  document.getElementById("dif").textContent = "Medium";
+})
+
+document.getElementById("hard-btn").addEventListener("click", function(Event) {
+  dropCounter = 1500;
+  initialSize = 40;
+  badDropOdds = 0.15;
+  document.getElementById("dif").textContent = "Hard";
+})
 
 // Wait for button click to start the game
 document.getElementById("start-btn").addEventListener("click", startGame);
@@ -14,9 +38,11 @@ function startGame() {
   if (gameRunning) return;
 
   gameRunning = true;
+  
+  document.querySelectorAll(".dif-btn").forEach(button => { button.disabled = true; });
 
   // Create new drops every second (1000 milliseconds)
-  dropMaker = setInterval(createDrop, 1000);
+  dropMaker = setInterval(createDrop, dropCounter);
 
   timeKeeper = setInterval(function() {
     const currentTime = timer.textContent;
@@ -24,9 +50,11 @@ function startGame() {
 
     if(currentTime <= 0)
     {
+      gameRunning = false;
       clearInterval(timeKeeper);
       clearInterval(dropMaker);
       timer.textContent = "0";
+      document.querySelectorAll(".dif-btn").forEach(button => { button.disabled = false; });
     }
   }, 1000);
 }
@@ -35,6 +63,7 @@ function resetGame() {
   clearInterval(dropMaker);
   clearInterval(timeKeeper);
   gameRunning = false;
+  document.querySelectorAll(".dif-btn").forEach(button => { button.disabled = false; });
   timer.textContent = "30";
   score.textContent = "0";
   document.getElementById("game-container").replaceChildren();
@@ -44,10 +73,9 @@ function createDrop() {
   // Create a new div element that will be our water drop
   const drop = document.createElement("div");
   drop.className = "water-drop";
-  if (Math.random() < 0.1) drop.classList.add("bad-drop");
+  if (Math.random() < badDropOdds) drop.classList.add("bad-drop");
 
   // Make drops different sizes for visual variety
-  const initialSize = 60;
   const sizeMultiplier = Math.random() * 0.8 + 0.5;
   const size = initialSize * sizeMultiplier;
   drop.style.width = drop.style.height = `${size}px`;
@@ -79,10 +107,6 @@ function createDrop() {
       if(size <= 45) score.textContent = currentScore - 2;
       else score.textContent = currentScore - 1;
     }
-    else {
-      // Player will earn double points if they hit a small normal drop
-      if(size <= 45) score.textContent = currentScore + 2;
-      else score.textContent = currentScore + 1;
-    }
+    else score.textContent = currentScore + 1;
   });
 }

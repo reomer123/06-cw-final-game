@@ -13,6 +13,12 @@
     <div class="game-wrapper">
         <h1 class="game-title">Water Drop</h1>
         <p class="game-tagline">Catch the good drops, avoid the bad ones. Catch smaller drops for double points!</p>
+        <div class="dif-options">
+          <button class="dif-btn" id="easy-btn">Easy</button>
+          <button class="dif-btn" id="med-btn">Medium</button>
+          <button class="dif-btn" id="hard-btn">Hard</button>
+          <p class="dif-indicator">Current Difficulty: <span id="dif">Medium</span></p>
+        </div>
         <div class="score-panel">
             <div class="score">Score: <span id="score">0</span></div>
             <div class="timer">Time: <span id="time">30</span>s</div>
@@ -24,6 +30,10 @@
         </div>
     </div>
 
+    <footer>
+      <a href="https://www.charitywater.org/" target="_blank">Visit charity: water</a><span>|</span><a href="https://www.charitywater.org/donate" target="_blank">Donate Today</a>
+    </footer>
+    
     <script src="script.js"></script>
 </body>
 </html>
