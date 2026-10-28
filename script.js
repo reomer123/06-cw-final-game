@@ -35,7 +35,7 @@ document.getElementById("reset-btn").addEventListener("click", resetGame);
 
 function startGame() {
   // Prevent multiple games from running at once
-  if (gameRunning) return;
+  if (gameRunning || Number(timer.textContent) <= 0) return;
 
   gameRunning = true;
   
@@ -45,17 +45,18 @@ function startGame() {
   dropMaker = setInterval(createDrop, dropCounter);
 
   timeKeeper = setInterval(function() {
-    const currentTime = timer.textContent;
-    timer.textContent = currentTime - 1;
+    const currentTime = Number(timer.textContent);
 
-    if(currentTime <= 0)
-    {
+    if (currentTime <= 1) {
       gameRunning = false;
       clearInterval(timeKeeper);
       clearInterval(dropMaker);
       timer.textContent = "0";
       document.querySelectorAll(".dif-btn").forEach(button => { button.disabled = false; });
+      return;
     }
+
+    timer.textContent = currentTime - 1;
   }, 1000);
 }
 
@@ -70,6 +71,8 @@ function resetGame() {
 }
 
 function createDrop() {
+  if (!gameRunning || Number(timer.textContent) <= 0) return;
+
   // Create a new div element that will be our water drop
   const drop = document.createElement("div");
   drop.className = "water-drop";
